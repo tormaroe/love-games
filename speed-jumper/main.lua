@@ -26,10 +26,10 @@ function love.load()
     platform.width = love.graphics.getWidth()
     platform.height = love.graphics.getHeight()
     
-    impact = love.audio.newSource("impact.wav", "static")
-    pling1 = love.audio.newSource("pling1.wav", "static")
-    pling2 = love.audio.newSource("pling2.wav", "static")
-    music = love.audio.newSource("vintage-elecro-pop-loop.mp3", "stream")
+    impact = love.audio.newSource("sounds/impact.wav", "static")
+    pling1 = love.audio.newSource("sounds/pling1.wav", "static")
+    pling2 = love.audio.newSource("sounds/pling2.wav", "static")
+    music = love.audio.newSource("sounds/vintage-elecro-pop-loop.mp3", "stream")
 
     --vintage-elecro-pop-loop.mp3
 
