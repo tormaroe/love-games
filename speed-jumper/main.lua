@@ -26,6 +26,13 @@ function love.load()
     platform.width = love.graphics.getWidth()
     platform.height = love.graphics.getHeight()
     
+    impact = love.audio.newSource("impact.wav", "static")
+    pling1 = love.audio.newSource("pling1.wav", "static")
+    pling2 = love.audio.newSource("pling2.wav", "static")
+    music = love.audio.newSource("vintage-elecro-pop-loop.mp3", "stream")
+
+    --vintage-elecro-pop-loop.mp3
+
     platform.x = 0
     platform.y = platform.height - 50
     
@@ -58,6 +65,8 @@ function love.load()
     end
     
     gameIsPaused = false
+    music:setLooping(true)
+    music:play()
 end
 
 function randomDot(maxX, maxY)
@@ -104,11 +113,17 @@ function love.update(dt)
     
     updateDots(food, dt, function(food)
         player.points = player.points + food.value
-        player.pointsPrSec = player.pointsPrSec + 1.0
+        player.pointsPrSec = player.pointsPrSec + 1.0 -- ??
+        if food.value == 1 then
+            pling1:play()
+        else
+            pling2:play()
+        end
     end)
     
     updateDots(mines, dt, function()
         player.lives = player.lives - 1
+        impact:play()
     end)
     
     player.pointsPrSec = math.max(0, player.pointsPrSec - dt)
@@ -188,7 +203,8 @@ function love.mousereleased(x, y, button, istouch)
 end
 
 function love.keypressed(key)
-    if key == 'r' then 
+    if key == 'r' then
+        music:stop()
         love.load() 
     end
 end
