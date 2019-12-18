@@ -32,7 +32,6 @@ function love.load()
     player.x = platform.width / 2
     player.y = platform.height / 2
     player.r = 10
-    player.img = love.graphics.newImage('purple.png')
     player.speed = 100
     player.ground = platform.y
     player.y_velocity = 10
@@ -46,6 +45,13 @@ function love.load()
     
     for i = 1, 20 do
         food[i] = randomDot(platform.width, platform.y)
+        food[i].color = { r = 0, g = 1, b = 0}
+        food[i].value = 1
+    end
+    for i = 21, 30 do
+        food[i] = randomDot(platform.width, platform.y)
+        food[i].color = { r = 1, g = 0.4, b = 0.6}
+        food[i].value = 5
     end
     for i = 1, 15 do
         mines[i] = randomDot(platform.width, platform.y)
@@ -58,7 +64,7 @@ function randomDot(maxX, maxY)
     return {
         x = math.random(maxX),
         y = math.random(maxY),
-        speed = math.random(50),
+        speed = math.random(100),
         up = true,
         visible = true,
         cooldown = 0
@@ -96,8 +102,8 @@ function love.update(dt)
         player.y = player.ground - player.r
     end
     
-    updateDots(food, dt, function()
-        player.points = player.points + 1
+    updateDots(food, dt, function(food)
+        player.points = player.points + food.value
         player.pointsPrSec = player.pointsPrSec + 1.0
     end)
     
@@ -135,7 +141,7 @@ function updateDots(dots, dt, hitCallback)
             if (math.abs(player.x - dots[i].x) < player.r) and (math.abs(player.y - dots[i].y) < player.r) then
                 dots[i].visible = false
                 dots[i].cooldown = 15
-                hitCallback()
+                hitCallback(dots[i])
             end
         else
             dots[i].cooldown = dots[i].cooldown - dt
@@ -151,9 +157,9 @@ function love.draw()
     love.graphics.setColor(1, 1, 1)
     love.graphics.rectangle('fill', platform.x, platform.y, platform.width, platform.height)
     
-    love.graphics.setColor(0, 1, 0)
     for i = 1, #food do
         if food[i].visible then
+            love.graphics.setColor(food[i].color.r, food[i].color.g, food[i].color.b)
             love.graphics.circle('fill', food[i].x, food[i].y, 5, 10)
         end
     end
@@ -169,10 +175,10 @@ function love.draw()
     
     love.graphics.print("Eaten: " .. player.points .. " blobs", 10, platform.y + 10)
     love.graphics.print("Bonus: " .. player.bonus .. " points", 140, platform.y + 10)
-    love.graphics.print("SCORE: " .. player.points + math.floor(player.bonus) - math.floor(player.timePenalty) .. " points", 360, platform.y + 10)
+    love.graphics.print("SCORE: " .. player.points + math.floor(player.bonus) - math.floor(player.timePenalty) .. " points", 380, platform.y + 10)
     love.graphics.print("Lives: " .. player.lives, 10, platform.y + 30)
     love.graphics.print("Rate: " .. player.pointsPrSec .. " points/sec", 140, platform.y + 30)
-    love.graphics.print("Time penalty: " .. player.timePenalty .. " points", 360, platform.y + 30)
+    love.graphics.print("Time penalty: " .. player.timePenalty .. " points", 380, platform.y + 30)
 end
 
 function love.mousepressed(x, y, button, istouch)
